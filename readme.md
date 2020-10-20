@@ -1,6 +1,6 @@
 Uso powershell con derechos administrador:
-```
-powershell -ExecutionPolicy Unrestricted -NoProfile .\init.ps1
+```powershell
+>powershell -ExecutionPolicy Unrestricted -NoProfile .\init.ps1
 ```
 
 

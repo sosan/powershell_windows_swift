@@ -4,44 +4,8 @@
 # actualizar el powershell
 powershell.exe -NoLogo -NoProfile -Command 'Install-Module -Name PackageManagement -Force -MinimumVersion 1.4.6 -Scope CurrentUser -AllowClobber'
 
-Import-Module BitsTransfer
-
-function bajarse_archivos($url, $output, $start_time)
-{
-    try  
-    {  
-
-        $downloading = Start-BitsTransfer -Source $url -Destination $output -Asynchronous
-
-        while (($downloading.JobState -eq "Transferring") -or ($downloading.JobState -eq "Connecting"))
-        {
-            sleep 5;
-        } 
-
-        Switch($downloading.JobState)
-        {
-            "Transferred" { Complete-BitsTransfer -BitsJob $downloading }
-            "Error" { $downloading | Format-List }
-            default {
-                Write-Error "No se puede descargar desde $url" -ErrorAction Stop
-            }
-        }
-
-        Write-Output "Descarga tardado: $((Get-Date).Subtract($start_time).Seconds) segundos"
-
-    }  
-    catch [System.Net.WebException]  
-    {
-        Write-Error "No se puede descargar desde $url" -ErrorAction Stop
-    
-    }
-
-
-}
-
-
 # https://github.com/compnerd/swift-build/releases/latest
-$download = Read-Host "Quieres bajarte Componentes de Swift (s/n)?"
+$download = Read-Host "Quieres bajarte Componentes de Swift (s/y (ya los tengo)?"
 if ($download -eq "s")
 {
 
@@ -76,15 +40,28 @@ if ($download -eq "s")
 
 
 $instalar = Read-Host "Quieres instalar Componentes de Swift (s/n)?"
+if ($instalar -eq "n")
+{
+	Write-Error "FIN" -ErrorAction Stop
+}
+
 if ($instalar -eq "s")
 {
-    Start-Process -FilePath $PSScriptRoot\installer.exe
+
+	if (-not(Test-Path -Path $PSScriptRoot\icu.msi) -or -not(Test-Path -Path $PSScriptRoot\installer.exe) -or 
+        -not(Test-Path -Path $PSScriptRoot\sdk.msi) -or -not(Test-Path -Path $PSScriptRoot\toolchain.msi)
+ )  
+	{
+        Write-Error "No encontramos el instalador" -ErrorAction Stop
+    }
+		
+	# esperar a que termine
+    Start-Process -FilePath $PSScriptRoot\installer.exe -Wait
 }
 
 
 # preguntar si queremos instalar actualizar visual studio
 $instalar = Read-Host "Quieres instalar Visual Studio (s/n)?"
-
 if ($instalar -eq "s")
 {
     # esperar que acabe de actualizar
