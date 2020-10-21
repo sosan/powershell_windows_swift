@@ -5,15 +5,15 @@
 powershell.exe -NoLogo -NoProfile -Command 'Install-Module -Name PackageManagement -Force -MinimumVersion 1.4.6 -Scope CurrentUser -AllowClobber'
 
 # https://github.com/compnerd/swift-build/releases/latest
-$salir = false
+$salir = "0"
 
-while($salir == false)
+while($salir -eq "0")
 {
     
-    $download = Read-Host "Quieres bajarte Componentes de Swift (s/y (ya los tengo)?"
+    $download = Read-Host "Quieres bajarte Componentes de Swift (s/y (ya los tengo))?"
     if (($download -eq "s") -or ($download -eq "y") )
     {
-        $salir = true
+        $salir = "1"
         
     }
 
@@ -52,8 +52,20 @@ if ($download -eq "s")
 
 }
 
+$salir = "0"
 
-$instalar = Read-Host "Quieres instalar Componentes de Swift (s/n/y (ya los tengo))?"
+while($salir -eq "0")
+{
+    
+    $instalar = Read-Host "Quieres instalar Componentes de Swift (s/n/y (ya los tengo))?"
+    if (($instalar -eq "s") -or ($instalar -eq "y") -or ($instalar -eq "n"))
+    {
+        $salir = "1"
+        
+    }
+
+}
+
 if ($instalar -eq "n")
 {
 	Write-Error "FIN" -ErrorAction Stop
@@ -73,8 +85,21 @@ if ($instalar -eq "s")
 }
 
 
-# preguntar si queremos instalar actualizar visual studio
-$instalar = Read-Host "Quieres instalar Visual Studio (s/n)?"
+$salir = "0"
+while($salir -eq "0")
+{
+    
+    # preguntar si queremos instalar actualizar visual studio
+    $instalar = Read-Host "Quieres instalar Visual Studio (s/n)?"
+    if (($instalar -eq "s") -or ($instalar -eq "n"))
+    {
+        $salir = "1"
+        
+    }
+
+}
+
+
 if ($instalar -eq "s")
 {
     # esperar que acabe de actualizar
@@ -82,31 +107,11 @@ if ($instalar -eq "s")
     $url = "https://download.visualstudio.microsoft.com/download/pr/e8bc3741-cb70-42aa-9b4e-2bd497de85dd/6b53cd77feaf149d8baca22797482e4af7f68964809e074a772eddf67f618fe5/vs_Community.exe"
     $output = "$PSScriptRoot\vs_community.exe"
     $start_time = Get-Date
-
     
-
-
     try  
     {  
 
         Invoke-WebRequest -Uri $url -OutFile $output
-        # Import-Module BitsTransfer
-        # $downloading = Start-BitsTransfer -Source $url -Destination $output -Asynchronous
-
-        # while (($downloading.JobState -eq "Transferring") -or ($downloading.JobState -eq "Connecting"))
-        # {
-        #     sleep 5;
-        # } 
-
-        # Switch($downloading.JobState)
-        # {
-        #     "Transferred" { Complete-BitsTransfer -BitsJob $downloading }
-        #     "Error" { $downloading | Format-List }
-        #     default {
-        #         Write-Error "No se puede descargar desde $url" -ErrorAction Stop
-        #     }
-        # }
-
         Write-Output "Descarga tardado: $((Get-Date).Subtract($start_time).Seconds) segundos"
 
     }  
@@ -218,7 +223,19 @@ subst S: $directorio_library
 
 Set-Location -Path s:\
 
-$download_librery = Read-Host "Deseas bajarte las librerias de github? (s/n)?"
+
+$salir = "0"
+while($salir -eq "0")
+{
+    
+    $download_librery = Read-Host "Deseas bajarte las librerias de github? (s/n)?"
+    if (($download_librery -eq "s") -or ($download_librery -eq "n"))
+    {
+        $salir = "1"
+        
+    }
+
+}
 
 if ($download_librery -eq "s")
 {
