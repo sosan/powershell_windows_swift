@@ -5,7 +5,21 @@
 powershell.exe -NoLogo -NoProfile -Command 'Install-Module -Name PackageManagement -Force -MinimumVersion 1.4.6 -Scope CurrentUser -AllowClobber'
 
 # https://github.com/compnerd/swift-build/releases/latest
-$download = Read-Host "Quieres bajarte Componentes de Swift (s/y (ya los tengo)?"
+$salir = false
+
+while($salir == false)
+{
+    
+    $download = Read-Host "Quieres bajarte Componentes de Swift (s/y (ya los tengo)?"
+    if (($download -eq "s") -or ($download -eq "y") )
+    {
+        $salir = true
+        
+    }
+
+}
+
+
 if ($download -eq "s")
 {
 
@@ -39,7 +53,7 @@ if ($download -eq "s")
 }
 
 
-$instalar = Read-Host "Quieres instalar Componentes de Swift (s/n)?"
+$instalar = Read-Host "Quieres instalar Componentes de Swift (s/n/y (ya los tengo))?"
 if ($instalar -eq "n")
 {
 	Write-Error "FIN" -ErrorAction Stop
@@ -49,8 +63,7 @@ if ($instalar -eq "s")
 {
 
 	if (-not(Test-Path -Path $PSScriptRoot\icu.msi) -or -not(Test-Path -Path $PSScriptRoot\installer.exe) -or 
-        -not(Test-Path -Path $PSScriptRoot\sdk.msi) -or -not(Test-Path -Path $PSScriptRoot\toolchain.msi)
- )  
+        -not(Test-Path -Path $PSScriptRoot\sdk.msi) -or -not(Test-Path -Path $PSScriptRoot\toolchain.msi) )  
 	{
         Write-Error "No encontramos el instalador" -ErrorAction Stop
     }
@@ -70,25 +83,29 @@ if ($instalar -eq "s")
     $output = "$PSScriptRoot\vs_community.exe"
     $start_time = Get-Date
 
+    
+
+
     try  
     {  
 
-        Import-Module BitsTransfer
-        $downloading = Start-BitsTransfer -Source $url -Destination $output -Asynchronous
+        Invoke-WebRequest -Uri $url -OutFile $output
+        # Import-Module BitsTransfer
+        # $downloading = Start-BitsTransfer -Source $url -Destination $output -Asynchronous
 
-        while (($downloading.JobState -eq "Transferring") -or ($downloading.JobState -eq "Connecting"))
-        {
-            sleep 5;
-        } 
+        # while (($downloading.JobState -eq "Transferring") -or ($downloading.JobState -eq "Connecting"))
+        # {
+        #     sleep 5;
+        # } 
 
-        Switch($downloading.JobState)
-        {
-            "Transferred" { Complete-BitsTransfer -BitsJob $downloading }
-            "Error" { $downloading | Format-List }
-            default {
-                Write-Error "No se puede descargar desde $url" -ErrorAction Stop
-            }
-        }
+        # Switch($downloading.JobState)
+        # {
+        #     "Transferred" { Complete-BitsTransfer -BitsJob $downloading }
+        #     "Error" { $downloading | Format-List }
+        #     default {
+        #         Write-Error "No se puede descargar desde $url" -ErrorAction Stop
+        #     }
+        # }
 
         Write-Output "Descarga tardado: $((Get-Date).Subtract($start_time).Seconds) segundos"
 
@@ -146,7 +163,7 @@ else
         Write-Output "Instalacion de visual studio 2019"
         try
         {
-            $process = Start-Process -FilePath $PSScriptRoot\vs_community.exe -ArgumentList "--installPath", "$visualStudioDir",
+            $process = Start-Process -FilePath $PSScriptRoot\vs_community.exe -ArgumentList "--installPath", $visualStudioDir,
             "--add", "Component.CPython3.x64", "--add", "Microsoft.VisualStudio.Component.Git", 
             "--add", "Microsoft.VisualStudio.Component.VC.ATL", "--add", "Microsoft.VisualStudio.Component.VC.CMake.Project", 
             "--add", "Microsoft.VisualStudio.Component.VC.Tools.x86.x64", "--add", "Microsoft.VisualStudio.Component.Windows10SDK",
