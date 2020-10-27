@@ -1,3 +1,5 @@
 local.ps1
+local2.ps1
+*.ps1
 *.exe
 *.msi
