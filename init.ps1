@@ -168,13 +168,23 @@ else
         Write-Output "Instalacion de visual studio 2019"
         try
         {
-            $process = Start-Process -FilePath $PSScriptRoot\vs_community.exe -ArgumentList "--installPath", $visualStudioDir,
+            $process = Start-Process -FilePath $PSScriptRoot\vs_community.exe -ArgumentList '--installPath "$visualStudioDir"',
             "--add", "Component.CPython3.x64", "--add", "Microsoft.VisualStudio.Component.Git", 
             "--add", "Microsoft.VisualStudio.Component.VC.ATL", "--add", "Microsoft.VisualStudio.Component.VC.CMake.Project", 
             "--add", "Microsoft.VisualStudio.Component.VC.Tools.x86.x64", "--add", "Microsoft.VisualStudio.Component.Windows10SDK",
             "--add", "Microsoft.VisualStudio.Component.Windows10SDK.17763",
             "--passive", "--wait" -Wait -PassThru
             Write-Output "Terminado Instalacion:" $process.ExitCode
+
+# $visualStudioDir = "c:\program files (x86)\"
+# $process = Start-Process -FilePath "D:\proyectosjavascript\powershell\vs_community.exe" -ArgumentList '--installPath "$visualStudioDir"',
+#             "--add", "Component.CPython3.x64", "--add", "Microsoft.VisualStudio.Component.Git", 
+#             "--add", "Microsoft.VisualStudio.Component.VC.ATL", "--add", "Microsoft.VisualStudio.Component.VC.CMake.Project", 
+#             "--add", "Microsoft.VisualStudio.Component.VC.Tools.x86.x64", "--add", "Microsoft.VisualStudio.Component.Windows10SDK",
+#             "--add", "Microsoft.VisualStudio.Component.Windows10SDK.17763",
+#             "--passive", "--wait" -Wait -PassThru
+
+
 
         }
         catch [System.InvalidOperationException]
