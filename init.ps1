@@ -176,14 +176,22 @@ else
             "--passive", "--wait" -Wait -PassThru
             Write-Output "Terminado Instalacion:" $process.ExitCode
 
-# $visualStudioDir = "c:\program files (x86)\"
-# $process = Start-Process -FilePath "D:\proyectosjavascript\powershell\vs_community.exe" -ArgumentList '--installPath "$visualStudioDir"',
-#             "--add", "Component.CPython3.x64", "--add", "Microsoft.VisualStudio.Component.Git", 
-#             "--add", "Microsoft.VisualStudio.Component.VC.ATL", "--add", "Microsoft.VisualStudio.Component.VC.CMake.Project", 
-#             "--add", "Microsoft.VisualStudio.Component.VC.Tools.x86.x64", "--add", "Microsoft.VisualStudio.Component.Windows10SDK",
-#             "--add", "Microsoft.VisualStudio.Component.Windows10SDK.17763",
-#             "--passive", "--wait" -Wait -PassThru
+$visualStudioDir = Join-Path ${env:ProgramFiles(x86)}
+$visualStudioDir = Resolve-Path "c:\program files (x86)\"
+$process = Start-Process -FilePath "D:\proyectosjavascript\powershell\vs_community.exe" -ArgumentList '--installPath', $visualStudioDir,
+            "--add", "Component.CPython3.x64", "--add", "Microsoft.VisualStudio.Component.Git", 
+            "--add", "Microsoft.VisualStudio.Component.VC.ATL", "--add", "Microsoft.VisualStudio.Component.VC.CMake.Project", 
+            "--add", "Microsoft.VisualStudio.Component.VC.Tools.x86.x64", "--add", "Microsoft.VisualStudio.Component.Windows10SDK",
+            "--add", "Microsoft.VisualStudio.Component.Windows10SDK.17763",
+            "--passive", "--wait" -Wait -PassThru
 
+
+$process = Start-Process -FilePath vs_community.exe -ArgumentList "--installPath", "'C:\Program Files (x86)\'"
+
+
+
+, "--passive", "--wait" -Wait -PassThru
+Write-Output $process.ExitCode
 
 
         }
