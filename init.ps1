@@ -57,7 +57,7 @@ $salir = "0"
 while($salir -eq "0")
 {
     
-    $instalar = Read-Host "Quieres instalar Componentes de Swift (s/n/y (ya los tengo))?"
+    $instalar = Read-Host "Quieres instalar Componentes de Swift (s/n/y (ya los tengo instalados))?"
     if (($instalar -eq "s") -or ($instalar -eq "y") -or ($instalar -eq "n"))
     {
         $salir = "1"
@@ -139,7 +139,7 @@ if ($regKey -eq "")
 else
 {
     # ya esta instalado
-    Write-Output "Ya esta instalado"
+    Write-Output "Intentando la instalacion...."
     $visualStudioDir = Get-ItemPropertyValue -Path $regKey -Name "(Default)"
     
     if ($visualStudioDir.Split("\").Length -le 5)
@@ -204,19 +204,64 @@ catch [System.Security.SecurityException]
 }
 
 
-
-$directorio_library = Read-Host "Directorio Library (default (d): c:\Library)?"
-
-if ($directorio_library -eq "d")
+$salir = "0"
+while($salir -eq "0")
 {
-    $directorio_library = "c:\Library"
+
+    $directorio_library = Read-Host "Directorio Library (default (d): c:\Library)?"
+
+    if ($directorio_library -eq "d")
+    {
+        $directorio_library = "c:\Library"
+    }
+
+    Set-Location -Path c:\
+
+    $directorio_valido = Resolve-Path $directorio_library -ErrorAction SilentlyContinue -ErrorVariable _frperror
+
+    if ($directorio_valido)
+    {
+        Write-Output "directorio existe"
+
+        if(!(Test-Path -Path $directorio_library ))
+        {
+            New-Item -Path $directorio_library -ItemType Directory
+        }
+
+        if(Test-Path -Path $directorio_library )
+        {
+            $salir = "1"
+        }
+        else
+        {
+            Write-Output "directorio no valido"
+        }
+
+    }
+    else
+    {
+
+        if(!(Test-Path -Path $directorio_library ))
+        {
+            New-Item -Path $directorio_library -ItemType Directory
+        }
+
+        if(Test-Path -Path $directorio_library )
+        {
+            $salir = "1"
+        }
+        else
+        {
+            Write-Output "No directorio no valido"
+        }
+
+
+    }
+
+
 }
 
-Set-Location -Path c:\
 
-if(!(Test-Path -Path $directorio_library )){
-    New-Item -Path $directorio_library -ItemType Directory
-}
 Set-Location -Path $directorio_library
 
 subst S: $directorio_library

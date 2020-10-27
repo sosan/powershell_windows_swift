@@ -1,1 +1,3 @@
 local.ps1
+*.exe
+*.msi
