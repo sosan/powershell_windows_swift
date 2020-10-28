@@ -5,60 +5,16 @@
 powershell.exe -NoLogo -NoProfile -Command 'Install-Module -Name PackageManagement -Force -MinimumVersion 1.4.6 -Scope CurrentUser -AllowClobber'
 
 # https://github.com/compnerd/swift-build/releases/latest
+
 $salir = "0"
+$instalar = ""
+$download = ""
 
 while($salir -eq "0")
 {
     
-    $download = Read-Host "Quieres bajarte Componentes de Swift (s/y (ya los tengo))?"
-    if (($download -eq "s") -or ($download -eq "y") )
-    {
-        $salir = "1"
-        
-    }
-
-}
-
-
-if ($download -eq "s")
-{
-
-    Write-Output "Descargando Componenetes de Swift"
-    
-    Write-Output "Descargando Icu.msi"
-    $url = "https://github.com/compnerd/swift-build/releases/download/v5.3/icu.msi"
-    $output = "$PSScriptRoot\icu.msi"
-    $start_time = Get-Date
-    Invoke-WebRequest -Uri $url -OutFile $output
-    Write-Output "Descarga tardado: $((Get-Date).Subtract($start_time).Seconds) segundos"
-
-    $url = "https://github.com/compnerd/swift-build/releases/download/v5.3/installer.exe"
-    $output = "$PSScriptRoot\installer.exe"
-    $start_time = Get-Date
-    Invoke-WebRequest -Uri $url -OutFile $output
-    Write-Output "Descarga tardado: $((Get-Date).Subtract($start_time).Seconds) segundos"
-
-    $url = "https://github.com/compnerd/swift-build/releases/download/v5.3/sdk.msi"
-    $output = "$PSScriptRoot\sdk.msi"
-    $start_time = Get-Date
-    Invoke-WebRequest -Uri $url -OutFile $output
-    Write-Output "Descarga tardado: $((Get-Date).Subtract($start_time).Seconds) segundos"
-
-    $url = "https://github.com/compnerd/swift-build/releases/download/v5.3/toolchain.msi"
-    $output = "$PSScriptRoot\toolchain.msi"
-    $start_time = Get-Date
-    Invoke-WebRequest -Uri $url -OutFile $output
-    Write-Output "Descarga tardado: $((Get-Date).Subtract($start_time).Seconds) segundos"
-
-}
-
-$salir = "0"
-
-while($salir -eq "0")
-{
-    
-    $instalar = Read-Host "Quieres instalar Componentes de Swift (s/n/y (ya los tengo instalados))?"
-    if (($instalar -eq "s") -or ($instalar -eq "y") -or ($instalar -eq "n"))
+    $instalar = Read-Host "Quieres instalar Componentes de Swift (s/n/y (ya los tengo))?"
+    if (($instalar -eq "s") -or ($instalar -eq "n") -or ($instalar -eq "y") )
     {
         $salir = "1"
         
@@ -68,13 +24,60 @@ while($salir -eq "0")
 
 if ($instalar -eq "n")
 {
-	Write-Error "FIN" -ErrorAction Stop
+    Write-Error "FIN" -ErrorAction Stop
 }
+
 
 if ($instalar -eq "s")
 {
+    $salir = "0"
+    while($salir -eq "0")
+    {
+        
+        $download = Read-Host "Tienes copia local de los Componentes de Swift (s/n)?"
 
-	if (-not(Test-Path -Path $PSScriptRoot\icu.msi) -or -not(Test-Path -Path $PSScriptRoot\installer.exe) -or 
+        if (($download -eq "s") -or ($download -eq "n") )
+        {
+            $salir = "1"
+            
+        }
+
+    }
+
+    if ($download -eq "n")
+    {
+
+        Write-Output "Descargando Componenetes de Swift"
+        
+        Write-Output "Descargando Icu.msi"
+        $url = "https://github.com/compnerd/swift-build/releases/download/v5.3/icu.msi"
+        $output = "$PSScriptRoot\icu.msi"
+        $start_time = Get-Date
+        Invoke-WebRequest -Uri $url -OutFile $output
+        Write-Output "Descarga tardado: $((Get-Date).Subtract($start_time).Seconds) segundos"
+
+        $url = "https://github.com/compnerd/swift-build/releases/download/v5.3/installer.exe"
+        $output = "$PSScriptRoot\installer.exe"
+        $start_time = Get-Date
+        Invoke-WebRequest -Uri $url -OutFile $output
+        Write-Output "Descarga tardado: $((Get-Date).Subtract($start_time).Seconds) segundos"
+
+        $url = "https://github.com/compnerd/swift-build/releases/download/v5.3/sdk.msi"
+        $output = "$PSScriptRoot\sdk.msi"
+        $start_time = Get-Date
+        Invoke-WebRequest -Uri $url -OutFile $output
+        Write-Output "Descarga tardado: $((Get-Date).Subtract($start_time).Seconds) segundos"
+
+        $url = "https://github.com/compnerd/swift-build/releases/download/v5.3/toolchain.msi"
+        $output = "$PSScriptRoot\toolchain.msi"
+        $start_time = Get-Date
+        Invoke-WebRequest -Uri $url -OutFile $output
+        Write-Output "Descarga tardado: $((Get-Date).Subtract($start_time).Seconds) segundos"
+
+    }
+
+
+    if (-not(Test-Path -Path $PSScriptRoot\icu.msi) -or -not(Test-Path -Path $PSScriptRoot\installer.exe) -or 
         -not(Test-Path -Path $PSScriptRoot\sdk.msi) -or -not(Test-Path -Path $PSScriptRoot\toolchain.msi) )  
 	{
         Write-Error "No encontramos el instalador" -ErrorAction Stop
@@ -82,16 +85,18 @@ if ($instalar -eq "s")
 		
 	# esperar a que termine
     Start-Process -FilePath $PSScriptRoot\installer.exe -Wait
+
 }
 
 
 $salir = "0"
+$instalar = ""
 while($salir -eq "0")
 {
     
     # preguntar si queremos instalar actualizar visual studio
-    $instalar = Read-Host "Quieres instalar Visual Studio (s/n)?"
-    if (($instalar -eq "s") -or ($instalar -eq "n"))
+    $instalar = Read-Host "Quieres instalar Visual Studio (s/n/y (ya lo tengo))?"
+    if (($instalar -eq "s") -or ($instalar -eq "y"))
     {
         $salir = "1"
         
@@ -99,75 +104,148 @@ while($salir -eq "0")
 
 }
 
+if ($instalar -eq "n")
+{
+    Write-Error "FIN" -ErrorAction Stop
+}
 
 if ($instalar -eq "s")
 {
-    # esperar que acabe de actualizar
-    Write-Output "Descargando VsCommunity"
-    $url = "https://download.visualstudio.microsoft.com/download/pr/e8bc3741-cb70-42aa-9b4e-2bd497de85dd/6b53cd77feaf149d8baca22797482e4af7f68964809e074a772eddf67f618fe5/vs_Community.exe"
-    $output = "$PSScriptRoot\vs_community.exe"
-    $start_time = Get-Date
-    
-    try  
-    {  
 
-        Invoke-WebRequest -Uri $url -OutFile $output
-        Write-Output "Descarga tardado: $((Get-Date).Subtract($start_time).Seconds) segundos"
-
-    }  
-    catch [System.Net.WebException]  
+    $salir = "0"
+    while($salir -eq "0")
     {
-        Write-Error "No se puede descargar desde $url" -ErrorAction Stop
+        $local = Read-Host "Tienes cache de Visual Studio en local (s/n)?"
+        if (($local -eq "s") -or ($local -eq "n"))
+        {
+            $salir = "1"
+            
+        }
+
+    }
     
+    $directoriocache = ""
+    if ($local -eq "s")
+    {
+        # preguntar la dire del directorio de la cache
+
+        $directoriocache = Read-Host "Directorio del cache de Visual Studio en local? (d)= (.\vslayoutswift\)"
+
+        if ($directoriocache -eq "d")
+        {
+            $directoriocache = "$PSScriptRoot\vslayoutswift"
+        }
+
+        $directorio_valido = Resolve-Path $directoriocache -ErrorAction SilentlyContinue -ErrorVariable _frperror
+
+        if ($directorio_valido)
+        {
+            Write-Output "directorio existe del cache de visual studio"
+        }
+        else
+        {
+            Write-Error "no existe directorio" -ErrorAction Stop
+        }
+
     }
 
-
-}
-
-
-
-# comprobar si ya esta instalado
-$regKey = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\devenv.exe"
-$visualStudioDir = ""
-
-if ($regKey -eq "")
-{
-    # no esta instalado
-    $regKey="C:\Program Files (x86)\"
-    $visualStudioDir = "C:\Program Files (x86)\"
-}
-else
-{
-    # ya esta instalado
-    Write-Output "Intentando la instalacion...."
-    $visualStudioDir = Get-ItemPropertyValue -Path $regKey -Name "(Default)"
-    
-    if ($visualStudioDir.Split("\").Length -le 5)
+    # visual studio no tiene copia en local
+    if ($local -eq "n")
     {
-        $a = $visualStudioDir.Split("\")[0]
-        $b = $visualStudioDir.Split("\")[1] + "\"
-        $visualStudioDir = $a + $b
+        # esperar que acabe de actualizar
+        Write-Output "Descargando VsCommunity"
+        $url = "https://download.visualstudio.microsoft.com/download/pr/e8bc3741-cb70-42aa-9b4e-2bd497de85dd/6b53cd77feaf149d8baca22797482e4af7f68964809e074a772eddf67f618fe5/vs_Community.exe"
+        $output = "$PSScriptRoot\vs_community.exe"
+        $start_time = Get-Date
+        
+        try  
+        {  
+
+            Invoke-WebRequest -Uri $url -OutFile $output
+            Write-Output "Descarga tardado: $((Get-Date).Subtract($start_time).Seconds) segundos"
+
+        }  
+        catch [System.Net.WebException]  
+        {
+            Write-Error "No se puede descargar desde $url" -ErrorAction Stop
+        
+        }
+
+    }
+
+    
+
+    # comprobar si ya esta instalado
+    $regKey = "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\devenv.exe"
+    $visualStudioDir = ""
+    # $osarquitectura = (Get-WmiObject Win32_OperatingSystem).OSArchitecture
+
+    # no esta instalado
+    if ($regKey -eq "")
+    {
+
+        $visualStudioDir = ${Env:ProgramFiles(x86)}
+        # If ($osarquitectura -like "64*") 
+        # {
+
+            
+        #     # $visualStudioDir=[Environment]::GetEnvironmentVariable("ProgramW6432")
+        # }
+        # else
+        # { 
+        #     $visualStudioDir = ${Env:ProgramFiles}
+        #     # $visualStudioDir=[Environment]::GetEnvironmentVariable("ProgramFiles")
+        # }
+
+        $regKey = ${Env:ProgramFiles(x86)}
+        # $visualStudioDir = "C:\Program Files (x86)\"
     }
     else
     {
-    
-        $a = $visualStudioDir.Split("\")[-1]
-        $b = $visualStudioDir.Split("\")[-2] + "\"
-        $c = $visualStudioDir.Split("\")[-3] + "\"
-        $d = $visualStudioDir.Split("\")[-4] + "\"
-        $e = $visualStudioDir.Split("\")[-5] + "\"
-        $f = $visualStudioDir.Split("\")[-6] + "\"
+        # ya esta instalado
+        Write-Output "Intentando la instalacion...."
+        $visualStudioDir = Get-ItemPropertyValue -Path $regKey -Name "(Default)"
         
-        $visualStudioDir = ($visualStudioDir.Replace($a,"")).replace($b,"").replace($c,"").Replace($d,"").Replace($e,"").Replace($f,"").Replace("devenv.exe","").replace("`"","")
+        if ($visualStudioDir.Split("\").Length -le 5)
+        {
+            $a = $visualStudioDir.Split("\")[0]
+            $b = $visualStudioDir.Split("\")[1] + "\"
+            $visualStudioDir = $a + $b
+        }
+        else
+        {
+        
+            $a = $visualStudioDir.Split("\")[-1]
+            $b = $visualStudioDir.Split("\")[-2] + "\"
+            $c = $visualStudioDir.Split("\")[-3] + "\"
+            $d = $visualStudioDir.Split("\")[-4] + "\"
+            $e = $visualStudioDir.Split("\")[-5] + "\"
+            $f = $visualStudioDir.Split("\")[-6] + "\"
+            
+            $visualStudioDir = ($visualStudioDir.Replace($a,"")).replace($b,"").replace($c,"").Replace($d,"").Replace($e,"").Replace($f,"").Replace("devenv.exe","").replace("`"","")
+        }
     }
-
+        
     Write-Output "Direccion Instalacion Visual Studio: $visualStudioDir"
 
-    if ($instalar -eq "s")
+    
+    Write-Output "Instalacion de visual studio 2019"
+    try
     {
-        Write-Output "Instalacion de visual studio 2019"
-        try
+
+        if ($local -eq "s")
         {
+            $process = Start-Process -FilePath $directoriocache\vs_community.exe -ArgumentList "--noweb", '--installPath "$visualStudioDir"',
+            "--add", "Component.CPython3.x64", "--add", "Microsoft.VisualStudio.Component.Git", 
+            "--add", "Microsoft.VisualStudio.Component.VC.ATL", "--add", "Microsoft.VisualStudio.Component.VC.CMake.Project", 
+            "--add", "Microsoft.VisualStudio.Component.VC.Tools.x86.x64", "--add", "Microsoft.VisualStudio.Component.Windows10SDK",
+            "--add", "Microsoft.VisualStudio.Component.Windows10SDK.17763",
+            "--passive", "--wait" -Wait -PassThru
+            Write-Output "Terminado Instalacion:" $process.ExitCode
+        }
+        else
+        {
+
             $process = Start-Process -FilePath $PSScriptRoot\vs_community.exe -ArgumentList '--installPath "$visualStudioDir"',
             "--add", "Component.CPython3.x64", "--add", "Microsoft.VisualStudio.Component.Git", 
             "--add", "Microsoft.VisualStudio.Component.VC.ATL", "--add", "Microsoft.VisualStudio.Component.VC.CMake.Project", 
@@ -176,33 +254,63 @@ else
             "--passive", "--wait" -Wait -PassThru
             Write-Output "Terminado Instalacion:" $process.ExitCode
 
-$visualStudioDir = Join-Path ${env:ProgramFiles(x86)}
-$visualStudioDir = Resolve-Path "c:\program files (x86)\"
-$process = Start-Process -FilePath "D:\proyectosjavascript\powershell\vs_community.exe" -ArgumentList '--installPath', $visualStudioDir,
-            "--add", "Component.CPython3.x64", "--add", "Microsoft.VisualStudio.Component.Git", 
-            "--add", "Microsoft.VisualStudio.Component.VC.ATL", "--add", "Microsoft.VisualStudio.Component.VC.CMake.Project", 
-            "--add", "Microsoft.VisualStudio.Component.VC.Tools.x86.x64", "--add", "Microsoft.VisualStudio.Component.Windows10SDK",
-            "--add", "Microsoft.VisualStudio.Component.Windows10SDK.17763",
-            "--passive", "--wait" -Wait -PassThru
-
-
-$process = Start-Process -FilePath vs_community.exe -ArgumentList "--installPath", "'C:\Program Files (x86)\'"
-
-
-
-, "--passive", "--wait" -Wait -PassThru
-Write-Output $process.ExitCode
-
-
         }
-        catch [System.InvalidOperationException]
-        {
-            Write-Error "No se puede ejecutar" -ErrorAction Stop
-        }
+
+
+        $visualStudioDir = Join-Path ${env:ProgramFiles(x86)}
+        $visualStudioDir = Resolve-Path "c:\program files (x86)\"
+
+        $visualStudioDir=[Environment]::GetEnvironmentVariable("ProgramW6432")
+        $process = Start-Process -FilePath "D:\proyectosjavascript\powershell\vs_community.exe" -ArgumentList "--installPath", $visualStudioDir,
+                    "--add", "Component.CPython3.x64", "--add", "Microsoft.VisualStudio.Component.Git", 
+                    "--add", "Microsoft.VisualStudio.Component.VC.ATL", "--add", "Microsoft.VisualStudio.Component.VC.CMake.Project", 
+                    "--add", "Microsoft.VisualStudio.Component.VC.Tools.x86.x64", "--add", "Microsoft.VisualStudio.Component.Windows10SDK",
+                    "--add", "Microsoft.VisualStudio.Component.Windows10SDK.17763"
+                    ,"--passive", "--wait" -Wait -PassThru
+
+
+        $process = Start-Process -FilePath vs_community.exe -ArgumentList "--installPath", ""C:\Program Files (x86)\""
+
+        $env:
+
+
+        , "--passive", "--wait" -Wait -PassThru
+        Write-Output $process.ExitCode
+
+
+        $visualStudioDir=[Environment]::GetEnvironmentVariable("ProgramW6432")
+        $process = Start-Process -FilePath "D:\proyectosjavascript\powershell\vs_community.exe" -ArgumentList "--installPath", "$visualStudioDir" X
+        $process = Start-Process -FilePath vs_community.exe -ArgumentList "--installPath", "$visualStudioDir"
+
+        $process = Start-Process -FilePath "D:\proyectosjavascript\powershell\vs_community.exe" -ArgumentList "--installPath $visualStudioDir" X
+        $process = Start-Process -FilePath vs_community.exe -ArgumentList '--installPath "$visualStudioDir"' X
+
+
+        # creacion de un layout
+        .\vs_community.exe --layout c:\vslayoutswift "--add", "Component.CPython3.x64", "--add", "Microsoft.VisualStudio.Component.Git", 
+                    "--add", "Microsoft.VisualStudio.Component.VC.ATL", "--add", "Microsoft.VisualStudio.Component.VC.CMake.Project", 
+                    "--add", "Microsoft.VisualStudio.Component.VC.Tools.x86.x64", "--add", "Microsoft.VisualStudio.Component.Windows10SDK",
+                    "--add", "Microsoft.VisualStudio.Component.Windows10SDK.17763" --lang es-ES
+
+        .\vs_community.exe --noweb "--add", "Component.CPython3.x64", "--add", "Microsoft.VisualStudio.Component.Git", 
+                    "--add", "Microsoft.VisualStudio.Component.VC.ATL", "--add", "Microsoft.VisualStudio.Component.VC.CMake.Project", 
+                    "--add", "Microsoft.VisualStudio.Component.VC.Tools.x86.x64", "--add", "Microsoft.VisualStudio.Component.Windows10SDK",
+                    "--add", "Microsoft.VisualStudio.Component.Windows10SDK.17763"
+
+
+    }
+    catch [System.InvalidOperationException]
+    {
+        Write-Error "No se puede ejecutar" -ErrorAction Stop
+    }
+
+
     }
 
 
 }
+
+
 
 try
 {
