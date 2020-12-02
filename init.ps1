@@ -143,6 +143,12 @@ if ($instalar -eq "s")
         if ($directorio_valido)
         {
             Write-Output "directorio existe del cache de visual studio"
+
+            if (-not(Test-Path -Path $directoriocache\vs_community.exe) )
+            {
+                Write-Error "No encontramos el instalador" -ErrorAction Stop
+            }
+
         }
         else
         {
@@ -242,20 +248,13 @@ if ($instalar -eq "s")
             #$argu = "--noweb --installPath ""$visualStudioDir"" --add Component.CPython3.x64 --add Microsoft.VisualStudio.Component.Git --add Microsoft.VisualStudio.Component.VC.ATL --add Microsoft.VisualStudio.Component.VC.CMake.Project --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.Windows10SDK --add Microsoft.VisualStudio.Component.Windows10SDK.17763 --passive --wait"
             $argu = "--noweb --installPath ""$visualStudioDir"" --add Component.CPython3.x64 --add Microsoft.VisualStudio.Component.Git --add Microsoft.VisualStudio.Component.VC.ATL --add Microsoft.VisualStudio.Component.VC.CMake.Project --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.Windows10SDK --add Microsoft.VisualStudio.Component.Windows10SDK.17763"
             $process = Start-Process -FilePath $directoriocache\vs_community.exe -ArgumentList $argu -Wait -PassThru
-
             Write-Output "Terminado Instalacion:" $process.ExitCode
         }
         else
         {
 
-
-
-
-
             $argu = "--installPath ""$visualStudioDir"" --add Component.CPython3.x64 --add Microsoft.VisualStudio.Component.Git --add Microsoft.VisualStudio.Component.VC.ATL --add Microsoft.VisualStudio.Component.VC.CMake.Project --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.Windows10SDK --add Microsoft.VisualStudio.Component.Windows10SDK.17763"
             $process = Start-Process -FilePath .\vs_community.exe -ArgumentList $argu -Wait -PassThru
-
-
             Write-Output "Terminado Instalacion: " $process.ExitCode
 
         }
