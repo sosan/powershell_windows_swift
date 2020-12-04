@@ -238,6 +238,7 @@ if ($instalar -eq "s")
 
     
     Write-Output "Instalacion de visual studio 2019"
+    Write-Output "* NOTA * Despues de instalar los componentes necesarios para VS2019, cerrar instalador de VS2019"
     try
     {
 
