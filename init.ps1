@@ -1,5 +1,5 @@
 # ejecutar en modo administrador
-# powershell -ExecutionPolicy Unrestricted -NoProfile .\init.ps1
+# >powershell -ExecutionPolicy Unrestricted -NoProfile .\init.ps1
 
 # actualizar el powershell
 powershell.exe -NoLogo -NoProfile -Command 'Install-Module -Name PackageManagement -Force -MinimumVersion 1.4.6 -Scope CurrentUser -AllowClobber'
@@ -240,8 +240,6 @@ if ($instalar -eq "s")
     Write-Output "Instalacion de visual studio 2019"
     try
     {
-
-        
 
         if ($local -eq "s")
         {
